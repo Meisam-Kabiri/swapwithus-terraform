@@ -92,3 +92,17 @@ variable "cloud_run_timeout" {
   type        = number
   default     = 300
 }
+
+variable "listing_images_public" {
+  description = <<-EOT
+    Whether listing images are served publicly (unsigned) instead of via
+    time-limited signed CDN URLs. This single switch drives BOTH halves so they
+    can never drift:
+      * the bucket's allUsers:objectViewer IAM binding (storage.tf), and
+      * the backend's IMAGE_URL_MODE env var (cloud-run.tf).
+    Default false keeps the current signed-URL behaviour. Set to true to go
+    public; set back to false to roll back (re-locks the bucket and re-signs).
+  EOT
+  type        = bool
+  default     = false
+}

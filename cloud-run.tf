@@ -57,6 +57,13 @@ resource "google_cloud_run_v2_service" "backend" {
         value = var.storage_bucket_name
       }
 
+      # Driven by the same var as the bucket's public IAM (storage.tf), so the
+      # app's URL mode and the bucket exposure can never drift out of sync.
+      env {
+        name  = "IMAGE_URL_MODE"
+        value = var.listing_images_public ? "public" : "signed"
+      }
+
       # Secrets
       env {
         name = "SWAPWITHUS_DATABASE_URL"
