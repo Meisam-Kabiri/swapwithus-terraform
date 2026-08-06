@@ -35,6 +35,8 @@ resource "google_project_iam_member" "token_creator" {
   member  = "serviceAccount:${google_service_account.backend_service.email}"
 }
 
+
+
 # Storage service account (used for CDN signed URLs and local development)
 resource "google_service_account" "storage_service" {
   account_id   = "swapwithus-storage-service"
