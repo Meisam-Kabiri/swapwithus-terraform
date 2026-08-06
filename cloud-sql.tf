@@ -27,18 +27,9 @@ resource "google_sql_database_instance" "main" {
 
       authorized_networks {
         name  = "home"
-        value = "94.252.14.21"
+        value = "94.252.61.3"
       }
 
-      authorized_networks {
-        name  = "home-alt"
-        value = "94.252.13.146"
-      }
-
-      authorized_networks {
-        name  = "home-old"
-        value = "94.252.81.64"
-      }
     }
 
     # No maintenance_window configured in GCP
