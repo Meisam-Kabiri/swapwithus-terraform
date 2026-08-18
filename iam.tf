@@ -49,3 +49,10 @@ resource "google_project_iam_member" "storage_service_admin" {
   role    = "roles/storage.admin"
   member  = "serviceAccount:${google_service_account.storage_service.email}"
 }
+
+# HMAC Key for Cloudflare Worker GCS Authentication
+resource "google_storage_hmac_key" "storage_service_hmac" {
+  project               = var.project_id
+  service_account_email = google_service_account.storage_service.email
+}
+

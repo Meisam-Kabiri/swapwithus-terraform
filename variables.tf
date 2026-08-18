@@ -92,3 +92,37 @@ variable "cloud_run_timeout" {
   type        = number
   default     = 300
 }
+
+variable "cloudflare_api_token" {
+  description = "Cloudflare API Token with DNS edit access"
+  type        = string
+  sensitive   = true
+  default     = ""
+}
+
+variable "cloudflare_zone_id" {
+  description = "Cloudflare Zone ID for swapwithus.com"
+  type        = string
+  default     = "a8d511407e9dcaf145b121d7a06a2537"
+}
+
+variable "domain_name" {
+  description = "Domain name managed in Cloudflare"
+  type        = string
+  default     = "swapwithus.com"
+}
+
+variable "cloudflare_account_id" {
+  description = "Cloudflare Account ID"
+  type        = string
+  default     = "82a2140ebc2261410ad968e71e1783ce"
+}
+
+variable "web_app_ip" {
+  description = "Public IP address for the swapwithus web app"
+  type        = string
+  default     = "216.198.79.1"
+}
+
+
+
