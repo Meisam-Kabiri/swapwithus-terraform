@@ -27,3 +27,17 @@ output "service_account_email" {
   description = "Service account email"
   value       = google_service_account.backend_service.email
 }
+
+output "firebase_public_config" {
+  description = "Integrated Frontend Firebase Config Map for Next.js"
+  value = {
+    appId             = google_firebase_web_app.web_app.app_id
+    projectId         = var.project_id
+    authDomain        = "${var.project_id}.firebaseapp.com"
+    storageBucket     = "${var.project_id}.firebasestorage.app"
+    messagingSenderId = "721260250909"
+  }
+}
+
+
+

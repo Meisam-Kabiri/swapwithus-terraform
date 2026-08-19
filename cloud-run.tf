@@ -8,6 +8,8 @@ resource "google_cloud_run_v2_service" "backend" {
   location = local.cloud_run_region
 
   template {
+
+
     service_account = google_service_account.backend_service.email
 
     # Container definition
@@ -166,7 +168,9 @@ resource "google_cloud_run_v2_service" "backend" {
 
   lifecycle {
     prevent_destroy = true
+    ignore_changes  = [client, client_version]
   }
+
 
   depends_on = [
     google_sql_database_instance.main,

@@ -10,6 +10,19 @@ resource "google_secret_manager_secret" "firebase_adminsdk" {
   }
 }
 
+# Generates the private Firebase Admin SDK credentials JSON key for swapwithus-backend-service
+resource "google_service_account_key" "backend_admin_key" {
+  service_account_id = google_service_account.backend_service.name
+}
+
+resource "google_secret_manager_secret_version" "firebase_adminsdk_version" {
+  secret      = google_secret_manager_secret.firebase_adminsdk.id
+  secret_data = base64decode(google_service_account_key.backend_admin_key.private_key)
+}
+
+
+
+
 resource "google_secret_manager_secret" "database_url" {
   secret_id = "swapwithus_database_url"
 

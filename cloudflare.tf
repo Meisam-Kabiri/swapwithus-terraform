@@ -76,3 +76,37 @@ resource "cloudflare_workers_secret" "gcs_bucket_name" {
   script_name = cloudflare_workers_script.gcs_proxy.name
   secret_text = var.storage_bucket_name
 }
+
+# ------------------------------------------------------------------------------
+# Security: Cloudflare Rate Limiting Ruleset (Free Tier: 10s Window)
+# ------------------------------------------------------------------------------
+
+resource "cloudflare_ruleset" "rate_limiting" {
+  zone_id     = var.cloudflare_zone_id
+  name        = "swapwithus-rate-limiting"
+  description = "Rate limiting rules for API endpoints"
+  kind        = "zone"
+  phase       = "http_ratelimit"
+
+  # Single Rule for API Endpoints (Max 20 requests per 10s per IP = 120/min)
+  rules {
+    action      = "block"
+    description = "Rate limit API endpoints to 20 requests per 10 seconds per IP"
+    expression  = "(http.request.uri.path wildcard \"/api/*\")"
+
+    ratelimit {
+      characteristics     = ["ip.src", "cf.colo.id"]
+      period              = 10
+      requests_per_period = 20
+      mitigation_timeout  = 10
+    }
+
+
+  }
+}
+
+
+
+
+
+

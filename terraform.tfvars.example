@@ -20,5 +20,5 @@ region = "europe-west4"
 
 # Cloudflare API Token (create in Cloudflare Dashboard -> My Profile -> API Tokens)
 # cloudflare_api_token = "your-cloudflare-api-token-here"
-# export CLOUDFLARE_API_TOKEN=$(pass cloudflare/swapwith/api-token)
+# export TF_VAR_cloudflare_api_token=$(pass cloudflare/swapwith/api-token)
 

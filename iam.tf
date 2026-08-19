@@ -35,6 +35,13 @@ resource "google_project_iam_member" "token_creator" {
   member  = "serviceAccount:${google_service_account.backend_service.email}"
 }
 
+resource "google_project_iam_member" "datastore_user" {
+  project = var.project_id
+  role    = "roles/datastore.user"
+  member  = "serviceAccount:${google_service_account.backend_service.email}"
+}
+
+
 
 
 # Storage service account (used for CDN signed URLs and local development)
