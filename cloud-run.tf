@@ -59,6 +59,12 @@ resource "google_cloud_run_v2_service" "backend" {
         value = var.storage_bucket_name
       }
 
+      env {
+        name  = "FIREBASE_STORAGE_BUCKET"
+        value = google_storage_bucket.chat_media.name
+      }
+
+
       # Secrets
       env {
         name = "SWAPWITHUS_DATABASE_URL"
