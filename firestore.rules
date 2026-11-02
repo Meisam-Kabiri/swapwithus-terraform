@@ -13,26 +13,6 @@ service cloud.firestore {
              request.auth.uid in get(/databases/$(database)/documents/conversations/$(conversationId)).data.participants;
     }
 
-    // Helper function to validate conversation data structure
-    function isValidConversation() {
-      let data = request.resource.data;
-      return data.keys().hasAll(['participants', 'requester_uid', 'host_uid',
-                                  'last_message', 'last_message_at',
-                                  'unread_count_requester', 'unread_count_host',
-                                  'created_at', 'status']) &&
-             data.participants is list &&
-             data.participants.size() == 2 &&
-             data.requester_uid is string &&
-             data.host_uid is string &&
-             data.last_message is string &&
-             data.last_message.size() <= 5000 &&  // Max message preview size
-             data.status in ['pending', 'accepted', 'declined'] &&
-             data.unread_count_requester is int &&
-             data.unread_count_host is int &&
-             data.unread_count_requester >= 0 &&
-             data.unread_count_host >= 0;
-    }
-
     // Helper function to validate message data structure
     function isValidMessage() {
       let data = request.resource.data;
@@ -55,32 +35,20 @@ service cloud.firestore {
       allow read: if isAuthenticated() &&
                      request.auth.uid in resource.data.participants;
 
-      // Allow create if:
-      // 1. User is authenticated and is a participant
-      // 2. Exactly 2 participants
-      // 3. Valid conversation structure
-      // 4. User is either requester or host
-      allow create: if isAuthenticated() &&
-                       request.auth.uid in request.resource.data.participants &&
-                       request.resource.data.participants.size() == 2 &&
-                       isValidConversation() &&
-                       (request.auth.uid == request.resource.data.requester_uid ||
-                        request.auth.uid == request.resource.data.host_uid);
+      // Only the backend creates conversations (admin access bypasses these rules).
+      // The status and listing fields decide who can see a home's exact address and a
+      // host's full identity, so clients must never be able to write them.
+      allow create: if false;
 
       // Allow update ONLY for specific fields by participants
       // This prevents malicious updates to participants array or other critical fields
       allow update: if isAuthenticated() &&
                        request.auth.uid in resource.data.participants &&
                        // Only allow updating these specific fields
+                       // Status is not listed: only the backend's host-checked endpoint changes it
                        request.resource.data.diff(resource.data).affectedKeys()
                          .hasOnly(['last_message', 'last_message_at',
-                                   'unread_count_requester', 'unread_count_host',
-                                   'status']) &&
-                       // Ensure participants array cannot be modified
-                       request.resource.data.participants == resource.data.participants &&
-                       // Only host can change status
-                       (request.resource.data.status == resource.data.status ||
-                        request.auth.uid == resource.data.host_uid) &&
+                                   'unread_count_requester', 'unread_count_host']) &&
                        // Validate message size if updating last_message
                        (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['last_message']) ||
                         request.resource.data.last_message.size() <= 5000);
