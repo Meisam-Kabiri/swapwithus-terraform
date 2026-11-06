@@ -174,7 +174,13 @@ resource "google_cloud_run_v2_service" "backend" {
 
   lifecycle {
     prevent_destroy = true
-    ignore_changes  = [client, client_version]
+    ignore_changes = [
+      client,
+      client_version,
+      # CI deploys each release image (deploy.yml in swapwithus-backend). Without this,
+      # terraform apply would roll the service back to the old :latest image.
+      template[0].containers[0].image,
+    ]
   }
 
 
