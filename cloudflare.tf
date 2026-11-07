@@ -110,3 +110,15 @@ resource "cloudflare_ruleset" "rate_limiting" {
 
 
 
+
+# ------------------------------------------------------------------------------
+# Cloudflare Web Analytics (free, no cookies, no consent banner needed)
+# auto_install injects the beacon at the edge for proxied hostnames, so the
+# frontend needs no script tag. Its Content Security Policy must allow
+# static.cloudflareinsights.com (script) and cloudflareinsights.com (connect).
+# ------------------------------------------------------------------------------
+resource "cloudflare_web_analytics_site" "swapwithus" {
+  account_id   = var.cloudflare_account_id
+  zone_tag     = var.cloudflare_zone_id
+  auto_install = true
+}
